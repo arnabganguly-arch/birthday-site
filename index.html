@@ -2,45 +2,118 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Happy Birthday 💖</title>
+  <title>🎂 Happy Birthday 🎂</title>
   <style>
     body {
-      background: linear-gradient(to right, #ffdde1, #ee9ca7);
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      text-align: center;
-      padding: 50px;
-      color: #fff;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fad0c4, #fbc2eb, #a6c1ee);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      overflow: hidden;
     }
-    .card {
-      background: rgba(0,0,0,0.5);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0px 0px 20px rgba(255,255,255,0.7);
-      display: inline-block;
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
     h1 {
-      font-size: 3em;
-      margin-bottom: 10px;
+      font-size: 4em;
+      color: white;
+      text-shadow: 3px 3px 8px rgba(0,0,0,0.4);
+      animation: pop 1.5s infinite alternate;
     }
-    p {
-      font-size: 1.3em;
+    @keyframes pop {
+      from { transform: scale(1); }
+      to { transform: scale(1.1); }
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    audio {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Happy Birthday, My Love 🎂💖</h1>
-    <p>Wishing you a day as beautiful as your smile and as special as your heart.  
-    You make my world brighter every day 💕.</p>
-  </div>
-
+  <h1>🎉 Happy Birthday! 🎉</h1>
+  
+  <!-- Confetti canvas -->
+  <canvas id="confetti"></canvas>
+  
+  <!-- Music autoplay -->
   <audio autoplay loop>
   <source src="about-you.mp3" type="audio/mpeg">
 </audio>
 
+  
+  <script>
+    // Confetti animation
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    Your browser does not support the audio element.
-  </audio>
+    const confettiCount = 300;
+    const confetti = [];
+
+    function randomColor() {
+      const colors = ["#ff0a54", "#ff477e", "#ff85a1", "#fbb1bd", "#f9bec7", "#a6c1ee", "#6a00f4", "#ffbe0b"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    for (let i = 0; i < confettiCount; i++) {
+      confetti.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * confettiCount,
+        color: randomColor(),
+        tilt: Math.floor(Math.random() * 10) - 10
+      });
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach(c => {
+        ctx.beginPath();
+        ctx.fillStyle = c.color;
+        ctx.ellipse(c.x, c.y, c.r, c.r / 2, c.tilt, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+      updateConfetti();
+    }
+
+    function updateConfetti() {
+      confetti.forEach(c => {
+        c.y += Math.cos(c.d) + 2;
+        c.x += Math.sin(0.5) * 2;
+        if (c.y > canvas.height) {
+          c.y = -10;
+          c.x = Math.random() * canvas.width;
+        }
+      });
+    }
+
+    function animate() {
+      drawConfetti();
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
 </body>
 </html>
+
